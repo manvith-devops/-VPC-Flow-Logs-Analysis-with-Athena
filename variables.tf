@@ -1,28 +1,28 @@
 ##############################################################
 # Variables – Assignment 15
-# Owner: Moath Malkawi
+# Owner: Manvith
 ##############################################################
 
 variable "aws_region" {
-  description = "AWS region to deploy resources (Moath Malkawi)"
+  description = "AWS region to deploy resources (Manvith)"
   type        = string
   default     = "us-east-1"
 }
 
 variable "vpc_cidr" {
-  description = "CIDR block for the Moath Malkawi VPC"
+  description = "CIDR block for the Manvith VPC"
   type        = string
   default     = "10.0.0.0/16"
 }
 
 variable "public_subnet_cidr" {
-  description = "CIDR block for the Moath Malkawi public subnet"
+  description = "CIDR block for the Manvith public subnet"
   type        = string
   default     = "10.0.1.0/24"
 }
 
 variable "private_subnet_cidr" {
-  description = "CIDR block for the Moath Malkawi private subnet"
+  description = "CIDR block for the Manvith private subnet"
   type        = string
   default     = "10.0.2.0/24"
 }
@@ -34,7 +34,7 @@ variable "instance_type" {
 }
 
 variable "ssh_public_key" {
-  description = "SSH public key for the Moath Malkawi key pair (paste your ~/.ssh/id_rsa.pub)"
+  description = "SSH public key for the Manvith key pair (paste your ~/.ssh/id_rsa.pub)"
   type        = string
   sensitive   = true
 }

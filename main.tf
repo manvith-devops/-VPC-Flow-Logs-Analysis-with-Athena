@@ -1,6 +1,6 @@
 ##############################################################
 # Assignment 15 – VPC Flow Logs Analysis with Athena
-# Owner: Moath Malkawi
+# Owner: Manvith
 ##############################################################
 
 terraform {
@@ -18,7 +18,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Owner      = "Moath-Malkawi"
+      Owner      = "Manvith"
       Assignment = "15"
       Project    = "VPC-FlowLogs-Athena"
       ManagedBy  = "Terraform"
@@ -55,13 +55,13 @@ data "aws_caller_identity" "current" {}
 # VPC
 ##############################################################
 
-resource "aws_vpc" "moath_malkawi_vpc" {
+resource "aws_vpc" "manvith_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
   tags = {
-    Name = "moath-malkawi-vpc"
+    Name = "manvith-vpc"
   }
 }
 
@@ -69,11 +69,11 @@ resource "aws_vpc" "moath_malkawi_vpc" {
 # Internet Gateway
 ##############################################################
 
-resource "aws_internet_gateway" "moath_malkawi_igw" {
-  vpc_id = aws_vpc.moath_malkawi_vpc.id
+resource "aws_internet_gateway" "manvith_igw" {
+  vpc_id = aws_vpc.manvith_vpc.id
 
   tags = {
-    Name = "moath-malkawi-igw"
+    Name = "manvith-igw"
   }
 }
 
@@ -81,25 +81,25 @@ resource "aws_internet_gateway" "moath_malkawi_igw" {
 # Subnets
 ##############################################################
 
-resource "aws_subnet" "moath_malkawi_public" {
-  vpc_id                  = aws_vpc.moath_malkawi_vpc.id
+resource "aws_subnet" "manvith_public" {
+  vpc_id                  = aws_vpc.manvith_vpc.id
   cidr_block              = var.public_subnet_cidr
   availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "moath-malkawi-public-subnet"
+    Name = "manvith-public-subnet"
     Tier = "Public"
   }
 }
 
-resource "aws_subnet" "moath_malkawi_private" {
-  vpc_id            = aws_vpc.moath_malkawi_vpc.id
+resource "aws_subnet" "manvith_private" {
+  vpc_id            = aws_vpc.manvith_vpc.id
   cidr_block        = var.private_subnet_cidr
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name = "moath-malkawi-private-subnet"
+    Name = "manvith-private-subnet"
     Tier = "Private"
   }
 }
@@ -108,45 +108,45 @@ resource "aws_subnet" "moath_malkawi_private" {
 # Route Tables
 ##############################################################
 
-resource "aws_route_table" "moath_malkawi_public_rt" {
-  vpc_id = aws_vpc.moath_malkawi_vpc.id
+resource "aws_route_table" "manvith_public_rt" {
+  vpc_id = aws_vpc.manvith_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.moath_malkawi_igw.id
+    gateway_id = aws_internet_gateway.manvith_igw.id
   }
 
   tags = {
-    Name = "moath-malkawi-public-rt"
+    Name = "manvith-public-rt"
   }
 }
 
-resource "aws_route_table_association" "moath_malkawi_public_rta" {
-  subnet_id      = aws_subnet.moath_malkawi_public.id
-  route_table_id = aws_route_table.moath_malkawi_public_rt.id
+resource "aws_route_table_association" "manvith_public_rta" {
+  subnet_id      = aws_subnet.manvith_public.id
+  route_table_id = aws_route_table.manvith_public_rt.id
 }
 
-resource "aws_route_table" "moath_malkawi_private_rt" {
-  vpc_id = aws_vpc.moath_malkawi_vpc.id
+resource "aws_route_table" "manvith_private_rt" {
+  vpc_id = aws_vpc.manvith_vpc.id
 
   tags = {
-    Name = "moath-malkawi-private-rt"
+    Name = "manvith-private-rt"
   }
 }
 
-resource "aws_route_table_association" "moath_malkawi_private_rta" {
-  subnet_id      = aws_subnet.moath_malkawi_private.id
-  route_table_id = aws_route_table.moath_malkawi_private_rt.id
+resource "aws_route_table_association" "manvith_private_rta" {
+  subnet_id      = aws_subnet.manvith_private.id
+  route_table_id = aws_route_table.manvith_private_rt.id
 }
 
 ##############################################################
 # Security Groups
 ##############################################################
 
-resource "aws_security_group" "moath_malkawi_public_sg" {
-  name        = "moath-malkawi-public-sg"
-  description = "Moath Malkawi - Public instance SG (SSH + ICMP allowed)"
-  vpc_id      = aws_vpc.moath_malkawi_vpc.id
+resource "aws_security_group" "manvith_public_sg" {
+  name        = "manvith-public-sg"
+  description = "Manvith - Public instance SG (SSH + ICMP allowed)"
+  vpc_id      = aws_vpc.manvith_vpc.id
 
   ingress {
     description = "SSH from anywhere"
@@ -172,14 +172,14 @@ resource "aws_security_group" "moath_malkawi_public_sg" {
   }
 
   tags = {
-    Name = "moath-malkawi-public-sg"
+    Name = "manvith-public-sg"
   }
 }
 
-resource "aws_security_group" "moath_malkawi_private_sg" {
-  name        = "moath-malkawi-private-sg"
-  description = "Moath Malkawi - Private instance SG (SSH + ICMP from VPC only)"
-  vpc_id      = aws_vpc.moath_malkawi_vpc.id
+resource "aws_security_group" "manvith_private_sg" {
+  name        = "manvith-private-sg"
+  description = "Manvith - Private instance SG (SSH + ICMP from VPC only)"
+  vpc_id      = aws_vpc.manvith_vpc.id
 
   ingress {
     description = "SSH from VPC"
@@ -205,7 +205,7 @@ resource "aws_security_group" "moath_malkawi_private_sg" {
   }
 
   tags = {
-    Name = "moath-malkawi-private-sg"
+    Name = "manvith-private-sg"
   }
 }
 
@@ -213,12 +213,12 @@ resource "aws_security_group" "moath_malkawi_private_sg" {
 # Key Pair
 ##############################################################
 
-resource "aws_key_pair" "moath_malkawi_key" {
-  key_name   = "moath-malkawi-key"
+resource "aws_key_pair" "manvith_key" {
+  key_name   = "manvith-key"
   public_key = var.ssh_public_key
 
   tags = {
-    Name = "moath-malkawi-key"
+    Name = "manvith-key"
   }
 }
 
@@ -226,36 +226,36 @@ resource "aws_key_pair" "moath_malkawi_key" {
 # EC2 Instances
 ##############################################################
 
-resource "aws_instance" "moath_malkawi_public_ec2" {
+resource "aws_instance" "manvith_public_ec2" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.moath_malkawi_public.id
-  vpc_security_group_ids = [aws_security_group.moath_malkawi_public_sg.id]
-  key_name               = aws_key_pair.moath_malkawi_key.key_name
+  subnet_id              = aws_subnet.manvith_public.id
+  vpc_security_group_ids = [aws_security_group.manvith_public_sg.id]
+  key_name               = aws_key_pair.manvith_key.key_name
 
   user_data = base64encode(templatefile("${path.module}/userdata_public.sh", {
-    private_ip = aws_instance.moath_malkawi_private_ec2.private_ip
+    private_ip = aws_instance.manvith_private_ec2.private_ip
   }))
 
   tags = {
-    Name = "moath-malkawi-public-ec2"
+    Name = "manvith-public-ec2"
     Tier = "Public"
   }
 
-  depends_on = [aws_instance.moath_malkawi_private_ec2]
+  depends_on = [aws_instance.manvith_private_ec2]
 }
 
-resource "aws_instance" "moath_malkawi_private_ec2" {
+resource "aws_instance" "manvith_private_ec2" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.moath_malkawi_private.id
-  vpc_security_group_ids = [aws_security_group.moath_malkawi_private_sg.id]
-  key_name               = aws_key_pair.moath_malkawi_key.key_name
+  subnet_id              = aws_subnet.manvith_private.id
+  vpc_security_group_ids = [aws_security_group.manvith_private_sg.id]
+  key_name               = aws_key_pair.manvith_key.key_name
 
   user_data = base64encode(file("${path.module}/userdata_private.sh"))
 
   tags = {
-    Name = "moath-malkawi-private-ec2"
+    Name = "manvith-private-ec2"
     Tier = "Private"
   }
 }
@@ -264,24 +264,24 @@ resource "aws_instance" "moath_malkawi_private_ec2" {
 # S3 Bucket for VPC Flow Logs
 ##############################################################
 
-resource "aws_s3_bucket" "moath_malkawi_flow_logs" {
-  bucket        = "moath-malkawi-vpc-flow-logs-${data.aws_caller_identity.current.account_id}"
+resource "aws_s3_bucket" "manvith_flow_logs" {
+  bucket        = "manvith-vpc-flow-logs-${data.aws_caller_identity.current.account_id}"
   force_destroy = true
 
   tags = {
-    Name = "moath-malkawi-flow-logs-bucket"
+    Name = "manvith-flow-logs-bucket"
   }
 }
 
-resource "aws_s3_bucket_versioning" "moath_malkawi_flow_logs_versioning" {
-  bucket = aws_s3_bucket.moath_malkawi_flow_logs.id
+resource "aws_s3_bucket_versioning" "manvith_flow_logs_versioning" {
+  bucket = aws_s3_bucket.manvith_flow_logs.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "moath_malkawi_flow_logs_sse" {
-  bucket = aws_s3_bucket.moath_malkawi_flow_logs.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "manvith_flow_logs_sse" {
+  bucket = aws_s3_bucket.manvith_flow_logs.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -290,19 +290,19 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "moath_malkawi_flo
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "moath_malkawi_flow_logs_pab" {
-  bucket                  = aws_s3_bucket.moath_malkawi_flow_logs.id
+resource "aws_s3_bucket_public_access_block" "manvith_flow_logs_pab" {
+  bucket                  = aws_s3_bucket.manvith_flow_logs.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "moath_malkawi_flow_logs_lifecycle" {
-  bucket = aws_s3_bucket.moath_malkawi_flow_logs.id
+resource "aws_s3_bucket_lifecycle_configuration" "manvith_flow_logs_lifecycle" {
+  bucket = aws_s3_bucket.manvith_flow_logs.id
 
   rule {
-    id     = "moath-malkawi-flow-logs-expiry"
+    id     = "manvith-flow-logs-expiry"
     status = "Enabled"
 
     filter {}
@@ -317,8 +317,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "moath_malkawi_flow_logs_lifecy
   }
 }
 
-resource "aws_s3_bucket_policy" "moath_malkawi_flow_logs_policy" {
-  bucket = aws_s3_bucket.moath_malkawi_flow_logs.id
+resource "aws_s3_bucket_policy" "manvith_flow_logs_policy" {
+  bucket = aws_s3_bucket.manvith_flow_logs.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -329,7 +329,7 @@ resource "aws_s3_bucket_policy" "moath_malkawi_flow_logs_policy" {
           Service = "delivery.logs.amazonaws.com"
         }
         Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.moath_malkawi_flow_logs.arn}/*"
+        Resource = "${aws_s3_bucket.manvith_flow_logs.arn}/*"
         Condition = {
           StringEquals = {
             "s3:x-amz-acl"               = "bucket-owner-full-control"
@@ -344,7 +344,7 @@ resource "aws_s3_bucket_policy" "moath_malkawi_flow_logs_policy" {
           Service = "delivery.logs.amazonaws.com"
         }
         Action   = "s3:GetBucketAcl"
-        Resource = aws_s3_bucket.moath_malkawi_flow_logs.arn
+        Resource = aws_s3_bucket.manvith_flow_logs.arn
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = data.aws_caller_identity.current.account_id
@@ -359,11 +359,11 @@ resource "aws_s3_bucket_policy" "moath_malkawi_flow_logs_policy" {
 # VPC Flow Logs  (Parquet format, Hive-compatible partitions)
 ##############################################################
 
-resource "aws_flow_log" "moath_malkawi_vpc_flow_log" {
-  vpc_id               = aws_vpc.moath_malkawi_vpc.id
+resource "aws_flow_log" "manvith_vpc_flow_log" {
+  vpc_id               = aws_vpc.manvith_vpc.id
   traffic_type         = "ALL"
   log_destination_type = "s3"
-  log_destination      = aws_s3_bucket.moath_malkawi_flow_logs.arn
+  log_destination      = aws_s3_bucket.manvith_flow_logs.arn
   log_format           = var.flow_log_format
 
   destination_options {
@@ -373,7 +373,7 @@ resource "aws_flow_log" "moath_malkawi_vpc_flow_log" {
   }
 
   tags = {
-    Name = "moath-malkawi-vpc-flow-log"
+    Name = "manvith-vpc-flow-log"
   }
 }
 
@@ -381,33 +381,33 @@ resource "aws_flow_log" "moath_malkawi_vpc_flow_log" {
 # Athena – Database, Workgroup, S3 results bucket
 ##############################################################
 
-resource "aws_s3_bucket" "moath_malkawi_athena_results" {
-  bucket        = "moath-malkawi-athena-results-${data.aws_caller_identity.current.account_id}"
+resource "aws_s3_bucket" "manvith_athena_results" {
+  bucket        = "manvith-athena-results-${data.aws_caller_identity.current.account_id}"
   force_destroy = true
 
   tags = {
-    Name = "moath-malkawi-athena-results"
+    Name = "manvith-athena-results"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "moath_malkawi_athena_results_pab" {
-  bucket                  = aws_s3_bucket.moath_malkawi_athena_results.id
+resource "aws_s3_bucket_public_access_block" "manvith_athena_results_pab" {
+  bucket                  = aws_s3_bucket.manvith_athena_results.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-resource "aws_athena_workgroup" "moath_malkawi_wg" {
-  name        = "moath-malkawi-workgroup"
-  description = "Moath Malkawi – Athena workgroup for VPC Flow Logs analysis"
+resource "aws_athena_workgroup" "manvith_wg" {
+  name        = "manvith-workgroup"
+  description = "Manvith – Athena workgroup for VPC Flow Logs analysis"
 
   configuration {
     enforce_workgroup_configuration    = true
     publish_cloudwatch_metrics_enabled = true
 
     result_configuration {
-      output_location = "s3://${aws_s3_bucket.moath_malkawi_athena_results.bucket}/results/"
+      output_location = "s3://${aws_s3_bucket.manvith_athena_results.bucket}/results/"
 
       encryption_configuration {
         encryption_option = "SSE_S3"
@@ -416,26 +416,26 @@ resource "aws_athena_workgroup" "moath_malkawi_wg" {
   }
 
   tags = {
-    Name = "moath-malkawi-workgroup"
+    Name = "manvith-workgroup"
   }
 }
 
-resource "aws_athena_database" "moath_malkawi_db" {
-  name   = "moath_malkawi_vpc_flow_logs"
-  bucket = aws_s3_bucket.moath_malkawi_athena_results.bucket
+resource "aws_athena_database" "manvith_db" {
+  name   = "manvith_vpc_flow_logs"
+  bucket = aws_s3_bucket.manvith_athena_results.bucket
 
-  comment = "Moath Malkawi – VPC Flow Logs Athena database"
+  comment = "Manvith – VPC Flow Logs Athena database"
 }
 
 ##############################################################
 # Athena Table (Parquet + Hive partitions)
 ##############################################################
 
-resource "aws_athena_named_query" "moath_malkawi_create_table" {
-  name      = "moath-malkawi-create-flow-logs-table"
-  workgroup = aws_athena_workgroup.moath_malkawi_wg.id
-  database  = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – Create VPC Flow Logs Parquet table with Hive partitions"
+resource "aws_athena_named_query" "manvith_create_table" {
+  name      = "manvith-create-flow-logs-table"
+  workgroup = aws_athena_workgroup.manvith_wg.id
+  database  = aws_athena_database.manvith_db.name
+  description = "Manvith – Create VPC Flow Logs Parquet table with Hive partitions"
 
   query = <<-SQL
     CREATE EXTERNAL TABLE IF NOT EXISTS vpc_flow_logs (
@@ -482,7 +482,7 @@ resource "aws_athena_named_query" "moath_malkawi_create_table" {
     STORED AS
       INPUTFORMAT  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
       OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
-    LOCATION 's3://${aws_s3_bucket.moath_malkawi_flow_logs.bucket}/AWSLogs/'
+    LOCATION 's3://${aws_s3_bucket.manvith_flow_logs.bucket}/AWSLogs/'
     TBLPROPERTIES (
       'has_encrypted_data' = 'false',
       'projection.enabled' = 'true',
@@ -503,7 +503,7 @@ resource "aws_athena_named_query" "moath_malkawi_create_table" {
       'projection.hour.type'            = 'integer',
       'projection.hour.range'           = '0,23',
       'projection.hour.digits'          = '2',
-      'storage.location.template'       = 's3://${aws_s3_bucket.moath_malkawi_flow_logs.bucket}/AWSLogs/$${aws_account_id}/$${aws_service}/$${aws_region}/$${year}/$${month}/$${day}/$${hour}'
+      'storage.location.template'       = 's3://${aws_s3_bucket.manvith_flow_logs.bucket}/AWSLogs/$${aws_account_id}/$${aws_service}/$${aws_region}/$${year}/$${month}/$${day}/$${hour}'
     );
   SQL
 }
@@ -512,14 +512,14 @@ resource "aws_athena_named_query" "moath_malkawi_create_table" {
 # Saved Athena Queries
 ##############################################################
 
-resource "aws_athena_named_query" "moath_malkawi_top10_src_ips" {
-  name        = "moath-malkawi-top10-source-ips"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – Top 10 source IPs by traffic volume (bytes)"
+resource "aws_athena_named_query" "manvith_top10_src_ips" {
+  name        = "manvith-top10-source-ips"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – Top 10 source IPs by traffic volume (bytes)"
 
   query = <<-SQL
-    -- Moath Malkawi: Top 10 source IPs by total bytes
+    -- Manvith: Top 10 source IPs by total bytes
     SELECT
       srcaddr,
       COUNT(*)          AS flow_count,
@@ -534,14 +534,14 @@ resource "aws_athena_named_query" "moath_malkawi_top10_src_ips" {
   SQL
 }
 
-resource "aws_athena_named_query" "moath_malkawi_reject_actions" {
-  name        = "moath-malkawi-reject-actions"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – All REJECT actions (blocked traffic)"
+resource "aws_athena_named_query" "manvith_reject_actions" {
+  name        = "manvith-reject-actions"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – All REJECT actions (blocked traffic)"
 
   query = <<-SQL
-    -- Moath Malkawi: All REJECT actions
+    -- Manvith: All REJECT actions
     SELECT
       srcaddr,
       dstaddr,
@@ -561,14 +561,14 @@ resource "aws_athena_named_query" "moath_malkawi_reject_actions" {
   SQL
 }
 
-resource "aws_athena_named_query" "moath_malkawi_traffic_between_ips" {
-  name        = "moath-malkawi-traffic-between-ips"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – Traffic between two specific IPs (replace placeholders)"
+resource "aws_athena_named_query" "manvith_traffic_between_ips" {
+  name        = "manvith-traffic-between-ips"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – Traffic between two specific IPs (replace placeholders)"
 
   query = <<-SQL
-    -- Moath Malkawi: Traffic between specific IPs
+    -- Manvith: Traffic between specific IPs
     -- Replace '10.0.1.x' and '10.0.2.x' with the actual IPs
     SELECT
       srcaddr,
@@ -591,14 +591,14 @@ resource "aws_athena_named_query" "moath_malkawi_traffic_between_ips" {
   SQL
 }
 
-resource "aws_athena_named_query" "moath_malkawi_port22_connections" {
-  name        = "moath-malkawi-port22-ssh-connections"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – All connections to/from port 22 (SSH)"
+resource "aws_athena_named_query" "manvith_port22_connections" {
+  name        = "manvith-port22-ssh-connections"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – All connections to/from port 22 (SSH)"
 
   query = <<-SQL
-    -- Moath Malkawi: SSH (port 22) connection attempts
+    -- Manvith: SSH (port 22) connection attempts
     SELECT
       srcaddr,
       dstaddr,
@@ -616,14 +616,14 @@ resource "aws_athena_named_query" "moath_malkawi_port22_connections" {
   SQL
 }
 
-resource "aws_athena_named_query" "moath_malkawi_traffic_by_protocol" {
-  name        = "moath-malkawi-traffic-by-protocol"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – Traffic breakdown by protocol (TCP/UDP/ICMP)"
+resource "aws_athena_named_query" "manvith_traffic_by_protocol" {
+  name        = "manvith-traffic-by-protocol"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – Traffic breakdown by protocol (TCP/UDP/ICMP)"
 
   query = <<-SQL
-    -- Moath Malkawi: Traffic by protocol
+    -- Manvith: Traffic by protocol
     -- IANA protocol numbers: 6=TCP, 17=UDP, 1=ICMP
     SELECT
       CASE protocol
@@ -645,14 +645,14 @@ resource "aws_athena_named_query" "moath_malkawi_traffic_by_protocol" {
   SQL
 }
 
-resource "aws_athena_named_query" "moath_malkawi_security_events" {
-  name        = "moath-malkawi-security-events-summary"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – Security events: rejected traffic + port scans"
+resource "aws_athena_named_query" "manvith_security_events" {
+  name        = "manvith-security-events-summary"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – Security events: rejected traffic + port scans"
 
   query = <<-SQL
-    -- Moath Malkawi: Security event detection
+    -- Manvith: Security event detection
     SELECT
       srcaddr,
       COUNT(DISTINCT dstport) AS distinct_ports_targeted,
@@ -670,14 +670,14 @@ resource "aws_athena_named_query" "moath_malkawi_security_events" {
   SQL
 }
 
-resource "aws_athena_named_query" "moath_malkawi_cost_estimate" {
-  name        = "moath-malkawi-data-scanned-cost-estimate"
-  workgroup   = aws_athena_workgroup.moath_malkawi_wg.id
-  database    = aws_athena_database.moath_malkawi_db.name
-  description = "Moath Malkawi – Row count to help estimate Athena data-scanned cost"
+resource "aws_athena_named_query" "manvith_cost_estimate" {
+  name        = "manvith-data-scanned-cost-estimate"
+  workgroup   = aws_athena_workgroup.manvith_wg.id
+  database    = aws_athena_database.manvith_db.name
+  description = "Manvith – Row count to help estimate Athena data-scanned cost"
 
   query = <<-SQL
-    -- Moath Malkawi: Row count per day for cost estimation
+    -- Manvith: Row count per day for cost estimation
     -- Athena costs $5 per TB scanned; Parquet compression typically 10x smaller
     SELECT
       year,
